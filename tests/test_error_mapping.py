@@ -21,10 +21,12 @@ class ErrorAndPathTests(unittest.TestCase):
     def test_allowed_relative_project_path_is_accepted(self) -> None:
         self.assertEqual(self.root / "safe", self.config.resolve_project_path("safe"))
 
-    def test_parent_traversal_is_rejected(self) -> None:
-        with self.assertRaises(AdapterError) as raised:
-            self.config.resolve_project_path("..\\escape")
-        self.assertEqual("PATH_OUTSIDE_ALLOWED_ROOT", raised.exception.code)
+    def test_parent_traversal_is_rejected_for_both_transport_separators(self) -> None:
+        for value in ("../escape", "..\\escape"):
+            with self.subTest(value=value):
+                with self.assertRaises(AdapterError) as raised:
+                    self.config.resolve_project_path(value)
+                self.assertEqual("PATH_OUTSIDE_ALLOWED_ROOT", raised.exception.code)
 
     def test_absolute_escape_is_rejected(self) -> None:
         with self.assertRaises(AdapterError) as raised:
@@ -54,4 +56,3 @@ class ErrorAndPathTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

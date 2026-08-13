@@ -23,8 +23,11 @@ class AdapterConfig:
     def resolve_project_path(self, value: str, *, must_exist: bool = False) -> Path:
         if not value or not value.strip():
             raise AdapterError("PATH_OUTSIDE_ALLOWED_ROOT", "Project path cannot be empty")
+        # MCP input is transport data, so reject traversal written with either
+        # path separator regardless of the server host operating system.
+        transport_parts = value.replace("\\", "/").split("/")
         supplied = Path(value)
-        if ".." in supplied.parts:
+        if ".." in transport_parts:
             raise AdapterError(
                 "PATH_OUTSIDE_ALLOWED_ROOT",
                 "Parent traversal is not allowed in project paths",
@@ -41,4 +44,3 @@ class AdapterConfig:
         if must_exist and not resolved.is_dir():
             raise AdapterError("PROJECT_NOT_FOUND", f"Project directory not found: {resolved}")
         return resolved
-
