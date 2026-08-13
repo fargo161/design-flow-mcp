@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "design-flow-mcp"
+version = "0.1.0"
+description = "A thin MCP adapter for Design Flow System v0.2"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "design-flow-system @ git+https://github.com/fargo161/design-flow-system.git@30bedf2032179fcb46186f30cc86c33b070c17d1",
+  "mcp>=2,<3",
+]
+
+[project.optional-dependencies]
+test = ["build>=1.2"]
+
+[project.scripts]
+design-flow-mcp = "design_flow_mcp.server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
