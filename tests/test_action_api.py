@@ -82,6 +82,60 @@ class ActionAPITests(unittest.TestCase):
         ended = self.client.post(f"/projects/{project_id}/end-session", headers=self.headers)
         self.assertFalse(ended.json()["result"]["project_complete"])
 
+    def test_import_draft_openapi_exposes_complete_typed_structure(self) -> None:
+        schema = self.client.app.openapi()
+        operation = schema["paths"]["/projects/{project_id}/draft"]["post"]
+        body_schema = operation["requestBody"]["content"]["application/json"]["schema"]
+        draft_request = schema["components"]["schemas"][body_schema["$ref"].rsplit("/", 1)[-1]]
+        draft_round_ref = draft_request["properties"]["draft"]["$ref"]
+        draft_round = schema["components"]["schemas"][draft_round_ref.rsplit("/", 1)[-1]]
+
+        self.assertEqual(
+            {
+                "draft_id", "round_id", "topic", "purpose", "questions", "decisions",
+                "prerequisites", "answers", "created_at", "updated_at",
+            },
+            set(draft_round["required"]),
+        )
+        self.assertNotEqual(True, draft_round.get("additionalProperties"))
+        self.assertEqual(
+            {"type": "string"},
+            draft_round["properties"]["answers"]["additionalProperties"],
+        )
+        self.assertEqual("date-time", draft_round["properties"]["created_at"]["format"])
+        self.assertEqual("date-time", draft_round["properties"]["updated_at"]["format"])
+
+        question_ref = draft_round["properties"]["questions"]["items"]["$ref"]
+        question = schema["components"]["schemas"][question_ref.rsplit("/", 1)[-1]]
+        self.assertEqual(
+            {"question_id", "text", "question_type", "options", "recommendation"},
+            set(question["required"]),
+        )
+        option_ref = question["properties"]["options"]["items"]["$ref"]
+        option = schema["components"]["schemas"][option_ref.rsplit("/", 1)[-1]]
+        self.assertEqual({"key", "label"}, set(option["required"]))
+        recommendation_ref = question["properties"]["recommendation"]["$ref"]
+        recommendation = schema["components"]["schemas"][
+            recommendation_ref.rsplit("/", 1)[-1]
+        ]
+        self.assertEqual(
+            {"proposed_answer", "reason", "status"},
+            set(recommendation["required"]),
+        )
+
+        decision_ref = draft_round["properties"]["decisions"]["items"]["$ref"]
+        decision = schema["components"]["schemas"][decision_ref.rsplit("/", 1)[-1]]
+        self.assertEqual(
+            {
+                "question_id", "decision_id", "scope", "rule_mapping", "dependencies",
+                "unresolved_consequences", "supersedes_decision", "supersession_notes", "concept",
+            },
+            set(decision["required"]),
+        )
+        rule_ref = decision["properties"]["rule_mapping"]["items"]["$ref"]
+        rule = schema["components"]["schemas"][rule_ref.rsplit("/", 1)[-1]]
+        self.assertEqual({"key", "rule"}, set(rule["required"]))
+
     def test_lock_failures_preserve_authority_and_draft(self) -> None:
         project_id = self.create_project()
         no_draft = self.client.post(f"/projects/{project_id}/lock", headers=self.headers)

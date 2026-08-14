@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://design-flow-action.example.com"
+      "url": "https://design-flow-action-fargo161.fly.dev"
     }
   ],
   "paths": {
@@ -788,12 +788,281 @@
         ],
         "title": "CreateProjectRequest"
       },
+      "DraftConceptRequest": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "REGISTER",
+              "REVISE"
+            ],
+            "title": "Action"
+          },
+          "concept_id": {
+            "type": "string",
+            "title": "Concept Id"
+          },
+          "canonical_name": {
+            "type": "string",
+            "title": "Canonical Name"
+          },
+          "definition": {
+            "type": "string",
+            "title": "Definition"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "maturity": {
+            "type": "string",
+            "enum": [
+              "PROPOSED",
+              "DEFINED",
+              "TESTED",
+              "STABLE",
+              "DISPUTED",
+              "DEPRECATED"
+            ],
+            "title": "Maturity"
+          },
+          "owns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Owns"
+          },
+          "does_not_own": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Does Not Own"
+          },
+          "boundaries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Boundaries"
+          },
+          "dependencies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Dependencies"
+          },
+          "relations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Relations"
+          },
+          "unresolved": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unresolved"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "action",
+          "concept_id",
+          "canonical_name",
+          "definition",
+          "version",
+          "maturity",
+          "owns",
+          "does_not_own",
+          "boundaries",
+          "dependencies",
+          "relations",
+          "unresolved"
+        ],
+        "title": "DraftConceptRequest"
+      },
+      "DraftDecisionRequest": {
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "title": "Question Id"
+          },
+          "decision_id": {
+            "type": "string",
+            "title": "Decision Id"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "rule_mapping": {
+            "items": {
+              "$ref": "#/components/schemas/DraftRuleMappingRequest"
+            },
+            "type": "array",
+            "title": "Rule Mapping"
+          },
+          "dependencies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Dependencies"
+          },
+          "unresolved_consequences": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unresolved Consequences"
+          },
+          "supersedes_decision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes Decision"
+          },
+          "supersession_notes": {
+            "type": "string",
+            "title": "Supersession Notes"
+          },
+          "concept": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DraftConceptRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "question_id",
+          "decision_id",
+          "scope",
+          "rule_mapping",
+          "dependencies",
+          "unresolved_consequences",
+          "supersedes_decision",
+          "supersession_notes",
+          "concept"
+        ],
+        "title": "DraftDecisionRequest"
+      },
+      "DraftQuestionOptionRequest": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "DraftQuestionOptionRequest"
+      },
+      "DraftQuestionRequest": {
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "title": "Question Id"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "question_type": {
+            "type": "string",
+            "enum": [
+              "MULTIPLE_CHOICE",
+              "YES_NO"
+            ],
+            "title": "Question Type"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/DraftQuestionOptionRequest"
+            },
+            "type": "array",
+            "title": "Options"
+          },
+          "recommendation": {
+            "$ref": "#/components/schemas/DraftRecommendationRequest"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "question_id",
+          "text",
+          "question_type",
+          "options",
+          "recommendation"
+        ],
+        "title": "DraftQuestionRequest"
+      },
+      "DraftRecommendationRequest": {
+        "properties": {
+          "proposed_answer": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Proposed Answer"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "PROPOSED",
+              "OWNER_SELECTED",
+              "SYNTHESIZED",
+              "TESTED",
+              "RATIFIED",
+              "UNRESOLVED",
+              "SUPERSEDED"
+            ],
+            "title": "Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "proposed_answer",
+          "reason",
+          "status"
+        ],
+        "title": "DraftRecommendationRequest"
+      },
       "DraftRequest": {
         "properties": {
           "draft": {
-            "additionalProperties": true,
-            "type": "object",
-            "title": "Draft"
+            "$ref": "#/components/schemas/DraftRoundRequest"
           }
         },
         "additionalProperties": false,
@@ -802,6 +1071,101 @@
           "draft"
         ],
         "title": "DraftRequest"
+      },
+      "DraftRoundRequest": {
+        "properties": {
+          "draft_id": {
+            "type": "string",
+            "title": "Draft Id"
+          },
+          "round_id": {
+            "type": "string",
+            "title": "Round Id"
+          },
+          "topic": {
+            "type": "string",
+            "title": "Topic"
+          },
+          "purpose": {
+            "type": "string",
+            "title": "Purpose"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/DraftQuestionRequest"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/DraftDecisionRequest"
+            },
+            "type": "array",
+            "title": "Decisions"
+          },
+          "prerequisites": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Prerequisites"
+          },
+          "answers": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Answers"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "draft_id",
+          "round_id",
+          "topic",
+          "purpose",
+          "questions",
+          "decisions",
+          "prerequisites",
+          "answers",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "DraftRoundRequest"
+      },
+      "DraftRuleMappingRequest": {
+        "properties": {
+          "key": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Key"
+          },
+          "rule": {
+            "type": "string",
+            "title": "Rule"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "rule"
+        ],
+        "title": "DraftRuleMappingRequest"
       },
       "SuccessResponse": {
         "properties": {

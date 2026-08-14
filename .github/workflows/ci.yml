@@ -27,7 +27,7 @@ jobs:
         env:
           DESIGN_FLOW_API_KEY: ci-test-secret-at-least-32-characters
           DESIGN_FLOW_PROJECT_ROOT: ${{ runner.temp }}/design-flow-action-projects
-          DESIGN_FLOW_PUBLIC_BASE_URL: https://design-flow-action.example.com
+          DESIGN_FLOW_PUBLIC_BASE_URL: https://design-flow-action-fargo161.fly.dev
         run: |
           python -m design_flow_action_api --export-openapi openapi.generated.json
           python scripts/validate_action_openapi.py openapi.generated.json openapi.json

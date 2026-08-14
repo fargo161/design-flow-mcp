@@ -29,9 +29,92 @@ class CreateProjectRequest(BaseModel):
     description: str = Field(default="", max_length=2000)
 
 
+DecisionStatusValue = Literal[
+    "OPEN",
+    "PROPOSED",
+    "OWNER_SELECTED",
+    "SYNTHESIZED",
+    "TESTED",
+    "RATIFIED",
+    "UNRESOLVED",
+    "SUPERSEDED",
+]
+
+
+class DraftQuestionOptionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    key: str
+    label: str
+
+
+class DraftRecommendationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    proposed_answer: list[str]
+    reason: str
+    status: DecisionStatusValue
+
+
+class DraftQuestionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    question_id: str
+    text: str
+    question_type: Literal["MULTIPLE_CHOICE", "YES_NO"]
+    options: list[DraftQuestionOptionRequest]
+    recommendation: DraftRecommendationRequest
+
+
+class DraftConceptRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    action: Literal["REGISTER", "REVISE"]
+    concept_id: str
+    canonical_name: str
+    definition: str
+    version: str
+    maturity: Literal["PROPOSED", "DEFINED", "TESTED", "STABLE", "DISPUTED", "DEPRECATED"]
+    owns: list[str]
+    does_not_own: list[str]
+    boundaries: list[str]
+    dependencies: list[str]
+    relations: list[str]
+    unresolved: list[str]
+
+
+class DraftRuleMappingRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    key: list[str]
+    rule: str
+
+
+class DraftDecisionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    question_id: str
+    decision_id: str
+    scope: str
+    rule_mapping: list[DraftRuleMappingRequest]
+    dependencies: list[str]
+    unresolved_consequences: list[str]
+    supersedes_decision: str | None
+    supersession_notes: str
+    concept: DraftConceptRequest | None
+
+
+class DraftRoundRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    draft_id: str
+    round_id: str
+    topic: str
+    purpose: str
+    questions: list[DraftQuestionRequest]
+    decisions: list[DraftDecisionRequest]
+    prerequisites: list[str]
+    answers: dict[str, str]
+    created_at: str = Field(json_schema_extra={"format": "date-time"})
+    updated_at: str = Field(json_schema_extra={"format": "date-time"})
+
+
 class DraftRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    draft: dict[str, Any]
+    draft: DraftRoundRequest
 
 
 class SuccessResponse(BaseModel):
@@ -148,7 +231,12 @@ def create_app(config: ActionAPIConfig | None = None) -> FastAPI:
         openapi_extra={"x-openai-isConsequential": False},
     )
     def import_draft(project_id: str, body: DraftRequest) -> SuccessResponse:
-        return _run(service, project_id, service.adapter.import_draft, draft=body.draft)
+        return _run(
+            service,
+            project_id,
+            service.adapter.import_draft,
+            draft=body.draft.model_dump(mode="json"),
+        )
 
     @app.post(
         "/projects/{project_id}/preview",

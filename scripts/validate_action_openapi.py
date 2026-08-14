@@ -35,6 +35,17 @@ def main() -> None:
     assert "authoritative" in lock["description"]
     assert preview["x-openai-isConsequential"] is False
     assert "non-authoritative" in preview["description"]
+    import_body = schema["paths"]["/projects/{project_id}/draft"]["post"]["requestBody"]
+    request_ref = import_body["content"]["application/json"]["schema"]["$ref"]
+    draft_request = schema["components"]["schemas"][request_ref.rsplit("/", 1)[-1]]
+    draft_ref = draft_request["properties"]["draft"]["$ref"]
+    draft_schema = schema["components"]["schemas"][draft_ref.rsplit("/", 1)[-1]]
+    assert set(draft_schema["required"]) == {
+        "draft_id", "round_id", "topic", "purpose", "questions", "decisions",
+        "prerequisites", "answers", "created_at", "updated_at",
+    }
+    assert draft_schema.get("additionalProperties") is not True
+    assert draft_schema["properties"]["answers"]["additionalProperties"] == {"type": "string"}
     if len(sys.argv) > 2:
         committed = json.loads(Path(sys.argv[2]).read_text())
         assert normalized(schema) == normalized(committed), (
