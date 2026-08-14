@@ -21,6 +21,17 @@ class MCPServerTests(unittest.TestCase):
                     self.assertIn("lock_round", names)
                     self.assertIn("preview_round", names)
                     self.assertNotIn("set_state", names)
+                    tools = {item.name: item for item in listed.tools}
+                    self.assertTrue(tools["preview_round"].annotations.read_only_hint)
+                    self.assertFalse(tools["lock_round"].annotations.read_only_hint)
+                    self.assertTrue(tools["lock_round"].annotations.destructive_hint)
+                    self.assertEqual(
+                        "authoritative-write",
+                        tools["lock_round"].meta["design-flow/action"]["effect"],
+                    )
+                    self.assertTrue(
+                        tools["lock_round"].meta["design-flow/action"]["requiresExplicitConfirmation"]
+                    )
                     result = await client.call_tool("readiness", {})
                     assert result.structured_content is not None
                     self.assertTrue(result.structured_content["ok"])
@@ -34,4 +45,3 @@ class MCPServerTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

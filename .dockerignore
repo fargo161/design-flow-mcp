@@ -1,0 +1,13 @@
+.git
+.venv
+build
+dist
+DesignFlowProjects
+__pycache__
+*.pyc
+.env
+.env.*
+*.env
+secrets/
+*.pem
+*.key

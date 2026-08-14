@@ -1,0 +1,31 @@
+{
+  "name": "design-flow",
+  "version": "0.1.0",
+  "description": "Run persistent, owner-authoritative design rounds from ChatGPT and Codex.",
+  "author": {
+    "name": "fargo161",
+    "url": "https://github.com/fargo161"
+  },
+  "homepage": "https://github.com/fargo161/design-flow-mcp",
+  "repository": "https://github.com/fargo161/design-flow-mcp",
+  "keywords": ["design", "decisions", "provenance", "mcp"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Design Flow",
+    "shortDescription": "Run owner-authoritative design rounds safely.",
+    "longDescription": "Structure design questions, keep recommendations separate from owner decisions, preview drafts without authority, explicitly lock approved rounds, track unresolved work and provenance, and compile living documents and context handoffs.",
+    "developerName": "fargo161",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": [
+      "Show unresolved questions in my Design Flow project.",
+      "Import this design round and preview it without locking.",
+      "Recommend the next design round, but do not start it."
+    ],
+    "brandColor": "#315B78",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg",
+    "logoDark": "./assets/logo-dark.svg"
+  },
+  "mcpServers": "./.mcp.json"
+}

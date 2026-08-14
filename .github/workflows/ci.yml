@@ -21,10 +21,23 @@ jobs:
         run: python -m pip install -e ".[test]"
       - name: Tests
         run: python -m unittest discover -s tests -v
+      - name: Validate plugin manifest and workflow skill
+        run: python scripts/validate_phase1_package.py
+      - name: Export and verify Custom GPT Action schema
+        env:
+          DESIGN_FLOW_API_KEY: ci-test-secret-at-least-32-characters
+          DESIGN_FLOW_PROJECT_ROOT: ${{ runner.temp }}/design-flow-action-projects
+          DESIGN_FLOW_PUBLIC_BASE_URL: https://design-flow-action.example.com
+        run: |
+          python -m design_flow_action_api --export-openapi openapi.generated.json
+          python scripts/validate_action_openapi.py openapi.generated.json openapi.json
       - name: Package build
         run: python -m build
       - name: Import and readiness smoke test
         env:
           DESIGN_FLOW_PROJECT_ROOT: ${{ runner.temp }}/design-flow-projects
         run: python -c "from design_flow_mcp.server import adapter, mcp; assert adapter.readiness()['engine_version'] == '0.2.0'; print(type(mcp).__name__)"
-
+      - name: Container build
+        run: docker build -t design-flow-action-api:test .
+      - name: Verify local secret fixtures are absent from image
+        run: python scripts/validate_docker_secret_exclusion.py design-flow-action-api:test

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Flow Workflow"
+  short_description: "Run owner-authoritative design rounds safely"
+  default_prompt: "Inspect my Design Flow project and guide the next safe design round."

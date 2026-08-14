@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "design-flow": {
+      "command": "design-flow-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}

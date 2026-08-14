@@ -6,7 +6,13 @@ from pathlib import Path
 
 from design_flow_mcp.adapter import DesignFlowAdapter
 from design_flow_mcp.config import AdapterConfig
-from design_flow_mcp.tools import MUTATING_TOOLS, READ_ONLY_TOOLS, REQUIRED_TOOLS
+from design_flow_mcp.tools import (
+    MUTATING_TOOLS,
+    READ_ONLY_TOOLS,
+    REQUIRED_TOOLS,
+    TOOL_ANNOTATIONS,
+    TOOL_EFFECTS,
+)
 
 
 class ToolContractTests(unittest.TestCase):
@@ -42,7 +48,22 @@ class ToolContractTests(unittest.TestCase):
             self.assertEqual("0.2.0", status["engine_version"])
             self.assertTrue(status["engine_import_success"])
 
+    def test_all_tools_have_explicit_effect_annotations(self) -> None:
+        exposed = READ_ONLY_TOOLS | MUTATING_TOOLS
+        self.assertEqual(exposed, set(TOOL_ANNOTATIONS))
+        self.assertEqual(exposed, set(TOOL_EFFECTS))
+        for name in READ_ONLY_TOOLS:
+            self.assertTrue(TOOL_ANNOTATIONS[name].read_only_hint)
+            self.assertTrue(TOOL_ANNOTATIONS[name].idempotent_hint)
+            self.assertFalse(TOOL_ANNOTATIONS[name].open_world_hint)
+        for name in MUTATING_TOOLS:
+            self.assertFalse(TOOL_ANNOTATIONS[name].read_only_hint)
+        self.assertTrue(TOOL_ANNOTATIONS["lock_round"].destructive_hint)
+        self.assertTrue(TOOL_EFFECTS["lock_round"]["requiresExplicitConfirmation"])
+        self.assertEqual("authoritative-write", TOOL_EFFECTS["lock_round"]["effect"])
+        self.assertFalse(TOOL_ANNOTATIONS["preview_round"].destructive_hint)
+        self.assertEqual("read-only", TOOL_EFFECTS["preview_round"]["effect"])
+
 
 if __name__ == "__main__":
     unittest.main()
-

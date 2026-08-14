@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" role="img" aria-label="Design Flow">
+  <rect width="640" height="160" rx="28" fill="#F5F1E8"/>
+  <path d="M42 45h52a24 24 0 0 1 0 48H72a18 18 0 0 0 0 36h55" fill="none" stroke="#315B78" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="42" cy="45" r="10" fill="#E6A94D"/><circle cx="127" cy="129" r="10" fill="#E6A94D"/>
+  <text x="175" y="103" font-family="Arial, sans-serif" font-size="58" font-weight="700" fill="#203544">Design Flow</text>
+</svg>

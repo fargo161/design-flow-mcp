@@ -119,6 +119,13 @@ class DesignFlowAdapter:
             "committed_round_count": len(committed),
         }
 
+    def get_round_by_id(self, *, round_id: str) -> dict[str, Any]:
+        """Return one immutable committed round without exposing registry internals."""
+        for item in self._active().workspace.rounds.rounds:
+            if item.round_id == round_id:
+                return self._round(item)
+        raise AdapterError("ROUND_NOT_FOUND", f"Committed round not found: {round_id}")
+
     def import_draft(
         self,
         *,

@@ -1,0 +1,835 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Design Flow Action API",
+    "description": "Private single-user REST adapter for Design Flow. Recommendations and previews are non-authoritative; only an explicitly approved lock commits semantic authority.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://design-flow-action.example.com"
+    }
+  ],
+  "paths": {
+    "/projects": {
+      "get": {
+        "summary": "List private Design Flow projects",
+        "operationId": "listProjects",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a Design Flow project",
+        "operationId": "createProject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/projects/{project_id}/resume": {
+      "post": {
+        "summary": "Resume a project session",
+        "operationId": "resumeProject",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/state": {
+      "get": {
+        "summary": "Get authoritative current state",
+        "operationId": "getState",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/unresolved": {
+      "get": {
+        "summary": "Get canonical unresolved items",
+        "operationId": "getUnresolved",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/rounds/{round_id}": {
+      "get": {
+        "summary": "Get one committed round",
+        "operationId": "getRound",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "round_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Round Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/draft": {
+      "post": {
+        "summary": "Import a non-authoritative structured draft",
+        "description": "Import working draft state. This does not commit a decision or create semantic authority.",
+        "operationId": "importDraft",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        },
+        "x-openai-isConsequential": false
+      }
+    },
+    "/projects/{project_id}/preview": {
+      "post": {
+        "summary": "Preview the active draft without committing",
+        "description": "Run a non-authoritative preview. This never locks or commits the draft.",
+        "operationId": "previewDraft",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        },
+        "x-openai-isConsequential": false
+      }
+    },
+    "/projects/{project_id}/lock": {
+      "post": {
+        "summary": "Commit the explicitly approved draft",
+        "description": "Commit the currently reviewed Design Flow draft. This changes authoritative project state and should only be called after explicit owner approval.",
+        "operationId": "lockRound",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        },
+        "x-openai-isConsequential": true
+      }
+    },
+    "/projects/{project_id}/context-handoff": {
+      "get": {
+        "summary": "Compile the context handoff",
+        "operationId": "compileContextHandoff",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/living-document": {
+      "get": {
+        "summary": "Compile the living application document",
+        "operationId": "compileLivingDocument",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/end-session": {
+      "post": {
+        "summary": "End the active session without committing a draft",
+        "operationId": "endSession",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/decisions": {
+      "get": {
+        "summary": "Get the decision ledger",
+        "operationId": "getDecisions",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/concepts": {
+      "get": {
+        "summary": "Get Design Flow concepts",
+        "operationId": "getConcepts",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/trace": {
+      "get": {
+        "summary": "Get immutable TRACE records",
+        "operationId": "getTrace",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/session-brief": {
+      "get": {
+        "summary": "Get the engine session brief",
+        "operationId": "getSessionBrief",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid private API key"
+          },
+          "404": {
+            "description": "Project or round not found"
+          },
+          "409": {
+            "description": "Invalid project or draft lifecycle state"
+          },
+          "422": {
+            "description": "Request or Design Flow validation failed"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateProjectRequest": {
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Display Name"
+          },
+          "mode": {
+            "type": "string",
+            "title": "Mode",
+            "default": "DISCOVERY"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Description",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "display_name"
+        ],
+        "title": "CreateProjectRequest"
+      },
+      "DraftRequest": {
+        "properties": {
+          "draft": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Draft"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "draft"
+        ],
+        "title": "DraftRequest"
+      },
+      "SuccessResponse": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "title": "Ok",
+            "default": true
+          },
+          "result": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "result"
+        ],
+        "title": "SuccessResponse"
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

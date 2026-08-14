@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Design Flow">
+  <rect width="128" height="128" rx="28" fill="#315B78"/>
+  <path d="M31 35h42a18 18 0 0 1 0 36H55a14 14 0 0 0 0 28h42" fill="none" stroke="#F5F1E8" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="31" cy="35" r="9" fill="#E6A94D"/><circle cx="97" cy="99" r="9" fill="#E6A94D"/>
+</svg>

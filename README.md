@@ -2,6 +2,8 @@
 
 A thin MCP bridge between ChatGPT-compatible MCP clients and Design Flow System v0.2.
 
+The repository also contains a private Custom GPT Action REST API under `design_flow_action_api`. Both transports call the same adapter and engine; neither owns semantic authority.
+
 The adapter exposes a small capability-based tool surface while all decisions, provenance, TRACE, validation, persistence, and commit boundaries remain inside the Design Flow engine.
 
 ## What this is
@@ -82,9 +84,29 @@ python -m build
 
 Normal installation uses the exact Git dependency declared in `pyproject.toml`; engine source is not copied or vendored here.
 
+## Private Custom GPT Action API
+
+```powershell
+$env:DESIGN_FLOW_PROJECT_ROOT="$HOME\Documents\DesignFlowProjects"
+$env:DESIGN_FLOW_API_KEY="replace-with-at-least-32-random-characters"
+.\.venv\Scripts\python.exe -m design_flow_action_api
+```
+
+The local API is available at `http://127.0.0.1:8080/docs`. A Custom GPT requires deploying the included `Dockerfile` behind HTTPS and configuring the `X-API-Key` Action credential. Project paths remain hidden behind stable opaque IDs.
+
+Supply the API key only through environment or hosting secret management. Do not put secrets in project files or the Docker build context. The REST boundary returns stable sanitized errors and never intentionally exposes physical server paths.
+
 ## Documents
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [ChatGPT setup](docs/CHATGPT_SETUP.md)
 - [Tool contracts](docs/TOOL_CONTRACTS.md)
-
+- [Private plugin architecture](docs/PLUGIN_ARCHITECTURE.md)
+- [Private plugin testing](docs/PRIVATE_PLUGIN_TEST.md)
+- [Phase 1 data handling draft](docs/DATA_HANDLING_DRAFT.md)
+- [Submission readiness](docs/SUBMISSION_READINESS.md)
+- [Phase 2 owner decisions](docs/PHASE_2_OWNER_DECISIONS.md)
+- [Custom GPT setup](docs/CUSTOM_GPT_SETUP.md)
+- [Custom GPT instructions](docs/CUSTOM_GPT_INSTRUCTIONS.md)
+- [Action API authority model](docs/API_AUTHORITY_MODEL.md)
+- [Local Action API development](docs/LOCAL_DEVELOPMENT.md)
